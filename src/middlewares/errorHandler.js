@@ -26,14 +26,16 @@ export function errorHandler(err, _req, res, _next) {
     });
   }
 
-  // Errores MySQL comunes
-  if (err.code === 'ER_DUP_ENTRY') {
-    return res.status(409).json({ error: 'Registro duplicado', details: err.sqlMessage });
-  }
-  if (err.code === 'ER_ROW_IS_REFERENCED_2') {
-    return res.status(409).json({ error: 'No se puede eliminar: tiene registros relacionados' });
-  }
 
-  console.error('❌ Error no manejado:', err);
-  res.status(500).json({ error: 'Error interno del servidor' });
+  // Errores de MySQL que en realidad son de validación
+if (err.code === 'ER_BAD_NULL_ERROR' || err.code === 'ER_TRUNCATED_WRONG_VALUE') {
+  console.error('❌ Error de datos en MySQL:', err.sqlMessage);
+  return res.status(400).json({
+    error: 'Datos inválidos',
+    details: err.sqlMessage,
+  });
+}
+
+console.error('❌ Error no manejado:', err);
+res.status(500).json({ error: 'Error interno del servidor' });
 }

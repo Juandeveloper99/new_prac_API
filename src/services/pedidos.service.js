@@ -10,6 +10,21 @@ const TRANSICIONES = {
   cancelado:    [],
 };
 
+/**
+ * Convierte una fecha ISO (2026-11-11T17:00:00.000Z) o un Date
+ * a formato MySQL DATETIME (2026-11-11 17:00:00).
+ */
+function fechaParaMySQL(fecha) {
+  if (!fecha) throw new ApiError(400, 'La fecha de entrega es requerida');
+  const d = fecha instanceof Date ? fecha : new Date(fecha);
+  if (isNaN(d.getTime())) {
+    throw new ApiError(400, `Fecha inválida: ${fecha}`);
+  }
+  // Formato YYYY-MM-DD HH:mm:ss en UTC (o local, según prefieras)
+  const iso = d.toISOString(); // "2026-11-11T17:00:00.000Z"
+  return iso.slice(0, 19).replace('T', ' '); // "2026-11-11 17:00:00"
+}
+
 /* ----------------------------------------------------------------
  * Crear pedido
  * body: { cliente_id, fecha_entrega, notas, items: [{receta_id, libras}] }
@@ -30,7 +45,7 @@ export async function crearPedido({ cliente_id, fecha_entrega, notas, items }) {
     // 2. Crear pedido "vacío" con total 0
     const [pedidoResult] = await conn.query(
       'INSERT INTO pedidos (cliente_id, fecha_entrega, notas, total) VALUES (?, ?, ?, 0)',
-      [cliente_id, fecha_entrega, notas ?? null]
+      [cliente_id, fechaParaMySQL(fecha_entrega), notas ?? null]
     );
     const pedidoId = pedidoResult.insertId;
 

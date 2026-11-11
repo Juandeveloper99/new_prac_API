@@ -2,7 +2,9 @@ import * as service from '../services/materiasPrimas.service.js';
 
 export async function listar(req, res, next) {
   try {
-    const data = await service.listar();
+    const data = await service.listar({
+      incluirInactivos: req.query.incluirInactivos === '1',
+    });
     res.json(data);
   } catch (err) { next(err); }
 }

@@ -1,9 +1,10 @@
 import { pool } from '../config/db.js';
 import { ApiError } from '../middlewares/errorHandler.js';
 
-export async function listar() {
+export async function listar({ incluirInactivos = false } = {}) {
+  const where = incluirInactivos ? '' : 'WHERE activo = 1';
   const [rows] = await pool.query(
-    'SELECT * FROM materias_primas ORDER BY nombre ASC'
+    `SELECT * FROM materias_primas ${where} ORDER BY nombre ASC`
   );
   return rows;
 }

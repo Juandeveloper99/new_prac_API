@@ -5,7 +5,7 @@ import { crearFacturaSchema, anularFacturaSchema } from '../validators/factura.s
 
 const router = Router();
 
-router.get('/', ctrl.listar);
+router.get('/', ctrl.listar);                              // ← línea 8
 router.get('/:id', ctrl.obtener);
 router.post('/', validate(crearFacturaSchema), ctrl.crear);
 router.post('/:id/anular', validate(anularFacturaSchema), ctrl.anular);
