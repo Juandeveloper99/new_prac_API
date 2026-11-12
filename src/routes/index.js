@@ -6,6 +6,7 @@ import pedidosRoutes from './pedidos.routes.js';
 import inventarioRoutes from './inventario.routes.js';
 import facturasRoutes from './facturas.routes.js';
 import pagosRoutes from './pagos.routes.js';
+import reportesRoutes from './reportes.routes.js';
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use('/pedidos', pedidosRoutes);
 router.use('/inventario', inventarioRoutes);
 router.use('/facturas', facturasRoutes);
 router.use('/pagos', pagosRoutes);
+router.use('/reportes', reportesRoutes);
 
 export default router;
